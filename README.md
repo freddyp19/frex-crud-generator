@@ -12,15 +12,6 @@ Generated artifacts:
 
 ## Intended projects
 
-This package is designed to be reused across:
-
-- `mensajesms.com.ve`
-- `masivamail.com`
-- `masivachat.com`
-- `isac.ec`
-- `isac.com.ve`
-- `was.masiva.com.ve`
-
 ## Usage
 
 Generate a CRUD from an existing database table:
