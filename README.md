@@ -1,6 +1,8 @@
 # Frex CRUD Generator
 
-`frex/crud-generator` is your internal fork of `ibex/crud-generator`, adapted to generate CRUD modules with DataTables for your Laravel SaaS projects.
+`frex/crud-generator` is a Laravel CRUD generator with Yajra DataTables support, maintained by `freddyp19`.
+
+It is based on `ibex/crud-generator`, extended to better support DataTables-based admin modules and reusable CRUD scaffolding across Laravel projects.
 
 Generated artifacts:
 
@@ -30,6 +32,12 @@ Then register the resource route in the target Laravel app:
 
 ```php
 Route::resource('banks', BankController::class);
+```
+
+In Laravel projects that still use `RouteServiceProvider::$namespace`, register the route with the legacy string syntax instead:
+
+```php
+Route::resource('banks', 'BankController');
 ```
 
 ## Requirements
@@ -62,6 +70,11 @@ Install it:
 composer require frex/crud-generator --dev
 php artisan vendor:publish --tag=frex-crud-config
 ```
+
+## Package source
+
+- Repository: `https://github.com/freddyp19/frex-crud-generator`
+- Composer package: `frex/crud-generator`
 
 ## Config
 
