@@ -1,0 +1,93 @@
+@extends('{{layout}}')
+
+@section('template_title')
+    {{modelTitle}}
+@endsection
+
+@section('content')
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+
+                            <span id="card_title">
+                                {{ __('{{modelTitle}}') }}
+                            </span>
+
+                            <div class="float-right">
+                                <a href="{{ route('{{modelRoute}}.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
+                                  {{ __('Nuevo') }}
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                    @if ($message = Session::get('success'))
+                        <div class="alert alert-success">
+                            <p>{{ $message }}</p>
+                        </div>
+                    @endif
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            {!! $dataTable->table() !!}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('script')
+<script src="{{ asset('js/datatables.js') }}"></script>
+<script src="/vendor/datatables/buttons.server-side.js"></script>
+{!! $dataTable->scripts() !!}
+<script>
+$(function() {
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    // para utilizar sweet-alert
+    $('#{{modelNameLowerCase}}-table tbody').on('click', '.sweet-danger', function (e) {
+        e.preventDefault();
+        var link = $(this).attr('href');
+
+        Swal.fire({
+            title: "Advertencia",
+            text: "Esta seguro de eliminar el registro?",
+            icon: 'warning',
+            confirmButtonColor: '#ff5b57',
+            cancelButtonColor: '#b6c2c9',
+            showCancelButton: true,
+            focusConfirm: false,
+            confirmButtonText: '<i class="far fa-trash-alt"></i> Eliminar',
+            cancelButtonText: '<i class="fas fa-undo-alt"></i> Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: link,
+                    type: 'DELETE',
+                    success: function (result) {
+                        Swal.fire({title: "Eliminado", text: result.mensaje, icon: 'success'});
+                        $('#{{modelNameLowerCase}}-table').DataTable().ajax.reload();
+                    },
+                    error: function (result) {
+                        Swal.fire({title: "NO Eliminado", text: result.responseJSON.mensaje, icon: 'error'});
+                        $('#{{modelNameLowerCase}}-table').DataTable().ajax.reload();
+                    }
+                });
+            }
+        });
+
+    });
+});
+</script>
+@endsection

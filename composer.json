@@ -1,0 +1,35 @@
+{
+    "name": "frex/crud-generator",
+    "description": "Laravel CRUD generator with Yajra DataTables support",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "M Awais",
+            "email": "asargodha@gmail.com"
+        }
+    ],
+    "keywords": ["laravel", "crud", "crud generator", "laravel crud generator", "datatable", "yajra", "frex"],
+    "require": {
+        "laravel/framework": "^5.5|^6.0|^7.0|^8.0",
+        "laravelcollective/html": "^5.4|^6.0|^7.0|^8.0"
+    },
+    "suggest": {
+        "realrashid/sweet-alert": "Required by the generated controllers and views for toast and confirm alerts.",
+        "yajra/laravel-datatables-buttons": "Required by the generated DataTable classes and indexDataTable views.",
+        "yajra/laravel-datatables-html": "Required by the generated DataTable classes and HTML builder integration."
+    },
+    "autoload": {
+        "psr-4": {
+            "Frex\\CrudGenerator\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Frex\\CrudGenerator\\FrexCrudServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

@@ -1,0 +1,106 @@
+<?php
+
+namespace App\DataTables;
+
+use {{modelNamespace}}\{{modelName}};
+use Yajra\DataTables\Html\Button;
+use Yajra\DataTables\Html\Column;
+use Yajra\DataTables\Services\DataTable;
+
+class {{modelName}}DataTable extends DataTable
+{
+    /**
+     * Build DataTable class.
+     *
+     * @param mixed $query Results from query() method.
+     * @return \Yajra\DataTables\DataTableAbstract
+     */
+    public function dataTable($query)
+    {
+        return datatables()
+            ->eloquent($query)
+            ->addColumn('action', function ($row) {
+                $show = '<a href="'.route("{{modelRoute}}.show", $row->id).'" class="btn btn-warning btn-sm"
+                         title="Ver" data-toggle="tooltip" data-placement="top"> <i class="fa fa-eye"> </i> Ver</a>';
+
+                $edit = '<a href="'.route("{{modelRoute}}.edit", $row->id).'" class="btn btn-info btn-sm"
+                         title="Editar" data-toggle="tooltip" data-placement="top"> <i class="fa fa-edit"> </i> Editar</a>';
+
+                $destroy = '<a href="'.route("{{modelRoute}}.destroy", $row->id).'" class="btn btn-danger btn-sm sweet-danger"
+                    title="Eliminar" data-toggle="tooltip" data-placement="top"> <i class="fa fa-trash"> </i> Borrar</a>';
+
+                return $show . $edit . $destroy;
+            })
+            {{editColumnRelation}}
+            ->editColumn('created_at', function ($row) {
+                return $row->created_at->format('d/m/Y');
+            })
+            ->rawColumns(['action']);
+    }
+
+    /**
+     * Get query source of dataTable.
+     *
+     * @param \App\Models\Parametro $model
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function query({{modelName}} $model)
+    {
+        return $model->select("{{table}}.*"){{tableRelations}};
+    }
+
+    /**
+     * Optional method if you want to use html builder.
+     *
+     * @return \Yajra\DataTables\Html\Builder
+     */
+    public function html()
+    {
+        return $this->builder()
+                    ->setTableId('{{modelNameLowerCase}}-table')
+                    ->columns($this->getColumns())
+                    ->minifiedAjax()
+                    ->dom('Bfrtip')
+                    ->responsive(true)
+                    ->autoWidth(false)
+                    ->language(['url' => '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json'])
+                    ->orderBy(0, 'asc')
+                    ->buttons(
+                        Button::make('create')->text('<i class="far fa-plus-square"></i> Nuevo'),
+                        Button::make('excel')->text('<i class="fas fa-download"></i> EXCEL'),
+                        Button::make('pdf')->text('<i class="fas fa-download"></i> PDF'),
+                        Button::make('csv')->text('<i class="fas fa-download"></i> CSV'),
+                        Button::make('print')->text('<i class="fas fa-print"></i> Imprimir')
+                    );
+    }
+
+    /**
+     * Get columns.
+     *
+     * @return array
+     */
+    protected function getColumns()
+    {
+        return [
+            {{column}}
+            {{columnRelations}}
+            Column::make('created_at'),
+            Column::make('updated_at'),
+            Column::computed('action')
+                  ->exportable(false)
+                  ->printable(false)
+                  ->width(90)
+                  ->addClass('text-center'),
+        ];
+    }
+
+    /**
+     * Get filename for export.
+     *
+     * @return string
+     */
+    protected function filename()
+    {
+        return '{{modelRoute}}_' . date('YmdHis');
+    }
+}
